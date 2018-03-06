@@ -1,0 +1,19 @@
+﻿using System;
+using System.Collections.Generic;
+using DatabaseScrambler.Domain;
+
+namespace DatabaseScrambler.Scramble
+{
+    public class ScrambleLastName : BaseScramble
+    {
+        public ScrambleLastName() 
+            : base(ScrambleType.LastName)
+        {
+        }
+
+        protected override IList<string> GetScrambleData()
+        {
+            return GetResource("LastNames.txt").Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+        }
+    }
+}
