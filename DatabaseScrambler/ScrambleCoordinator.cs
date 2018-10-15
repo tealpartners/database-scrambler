@@ -27,31 +27,48 @@ namespace DatabaseScrambler
         {
             using (var connection = new SqlConnection(connectionString))
             {
-                Console.WriteLine("Opening sql connection");
+                try
+                {
+                    Console.WriteLine("Opening sql connection");
 
-                connection.Open();
+                    connection.Open();
+                }
+                catch (SqlException exception)
+                {
+                    Cansole.WriteError(exception.Message);
+                    return;
+                }
 
                 using (var transaction = connection.BeginTransaction())
                 {
-                    Console.WriteLine("Create temp table with scramble data");
-
-                    //Dump all scramble data in temp table.
-                    CreateScrambleTable(connection, transaction);
-
-                    foreach (var configuration in GetConfiguration(configurationFile))
+                    try
                     {
-                        Console.WriteLine("Running scrambler {2} for table '{0}', column '{1}'", configuration.TableName, configuration.ColumnName, configuration.Type);
+                        Console.WriteLine("Create temp table with scramble data");
 
-                        var scrambleAction = _scrambleActions.SingleOrDefault(x => x.CanScramble(configuration.Type));
-                        if (scrambleAction == null)
+                        //Dump all scramble data in temp table.
+                        CreateScrambleTable(connection, transaction);
+
+                        foreach (var configuration in GetConfiguration(configurationFile))
                         {
-                            throw new Exception($"No scramble action found for type '{configuration.Type}'.");
+                            Console.WriteLine($"Running scrambler {configuration.Type} for table '{configuration.TableName}', column '{configuration.ColumnName}'");
+
+                            var scrambleAction = _scrambleActions.SingleOrDefault(x => x.CanScramble(configuration.Type));
+                            if (scrambleAction == null)
+                            {
+                                Cansole.WriteError($"No scramble action found for type '{configuration.Type}'.");
+                                throw new Exception();
+                            }
+
+                            scrambleAction.Scramble(connection, transaction, configuration);
                         }
 
-                        scrambleAction.Scramble(connection, transaction, configuration);
+                        transaction.Commit();
                     }
-
-                    transaction.Commit();
+                    catch (Exception exception)
+                    {
+                        Cansole.WriteError(exception.Message);
+                        transaction.Rollback();
+                    }
                 } 
             }
         }

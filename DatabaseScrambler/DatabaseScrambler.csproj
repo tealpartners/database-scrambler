@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bootstrapper.cs" />
+    <Compile Include="Cansole.cs" />
     <Compile Include="Domain\Configuration.cs" />
     <Compile Include="Domain\ScrambleType.cs" />
     <Compile Include="Domain\XmlConfiguration.cs" />

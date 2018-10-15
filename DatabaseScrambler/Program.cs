@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace DatabaseScrambler
+﻿namespace DatabaseScrambler
 {
     public class Program
     {
@@ -12,8 +10,8 @@ namespace DatabaseScrambler
             if (args.Length != 2)
             {
                 const string error = "Run program as 'DatabaseScrambler.exe <connection string> <ScrambleConfiguration.xml>'";
-                Console.WriteLine(error);
-                throw new Exception(error);
+                Cansole.WriteError(error);
+                return;
             }
 
             var container = Bootstrapper.Bootstrap();
