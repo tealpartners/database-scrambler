@@ -48,26 +48,30 @@ namespace DatabaseScrambler.Scramble
         {
             var scrambleData = GetScrambleData();
 
+            var dataTable = new DataTable();
+            dataTable.Columns.Add("@type", typeof(string));
+            dataTable.Columns.Add("@value", typeof(string));
+            dataTable.Columns.Add("@valueIndex", typeof(int));
+
             for (var i = 0; i < scrambleData.Count; i++)
             {
-                var query = "insert into #ScrambleData ([Type], Value, ValueIndex) values (@type, @value, @valueIndex)";
-                using (var command = new SqlCommand(query, connection, transaction))
-                {
-                    command.CommandTimeout = 0;
-
-                    var typeParameter = new SqlParameter("@type", SqlDbType.NVarChar);
-                    typeParameter.Value = ScrambleType.ToString();
-                    var valueParameter = new SqlParameter("@value", SqlDbType.NVarChar);
-                    valueParameter.Value = scrambleData[i];
-                    var valueIndexParameter = new SqlParameter("@valueIndex", SqlDbType.Int);
-                    valueIndexParameter.Value = i;
-
-                    command.Parameters.Add(typeParameter);
-                    command.Parameters.Add(valueParameter);
-                    command.Parameters.Add(valueIndexParameter);
-                    command.ExecuteNonQuery();
-                }
+                dataTable.Rows.Add(ScrambleType.ToString(), scrambleData[i], i);
             }
+            
+            // make sure to enable triggers
+            // more on triggers in next post
+            var bulkCopy = new SqlBulkCopy(
+                connection,
+                SqlBulkCopyOptions.KeepIdentity,
+                transaction
+            );
+
+            // set the destination table name
+            bulkCopy.BatchSize = 500;
+            bulkCopy.DestinationTableName = "#ScrambleData";
+
+            // write the data in the "dataTable"
+            bulkCopy.WriteToServer(dataTable);
         }
 
         protected abstract IList<string> GetScrambleData();
