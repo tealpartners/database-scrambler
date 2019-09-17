@@ -11,7 +11,7 @@ namespace DatabaseScrambler
 {
     public interface IScrambleCoordinator
     {
-        void Scramble(string connectionString, string configurationFile);
+        void Scramble(string connectionString, string configurationFile, string runSqlFileAfterScramble);
     }
 
     public class ScrambleCoordinator : IScrambleCoordinator
@@ -23,7 +23,7 @@ namespace DatabaseScrambler
             _scrambleActions = scrambleActions;
         }
 
-        public void Scramble(string connectionString, string configurationFile)
+        public void Scramble(string connectionString, string configurationFile, string runSqlFileAfterScramble)
         {
             using (var connection = new SqlConnection(connectionString))
             {
@@ -60,6 +60,17 @@ namespace DatabaseScrambler
                             }
 
                             scrambleAction.Scramble(connection, transaction, configuration);
+                        }
+
+                        if (!string.IsNullOrEmpty(runSqlFileAfterScramble))
+                        {
+                            var sql = File.ReadAllText(runSqlFileAfterScramble);
+                        
+                            using (var command = new SqlCommand(sql, connection, transaction))
+                            {
+                                command.CommandTimeout = 0;
+                                command.ExecuteNonQuery();
+                            }
                         }
 
                         transaction.Commit();
