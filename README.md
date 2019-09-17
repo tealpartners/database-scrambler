@@ -3,8 +3,9 @@ Provide a way to scramble your offline SQL database with configuration
 
 # usage
 ```bash
-DatabaseScrambler.exe "<connection-string>" ScrambleConfiguration.xml
+DatabaseScrambler.exe "<connection-string>" ScrambleConfiguration.xml custom_sql.sql
 ```
+- custom_sql.sql is an optional parameter
 
 # configuration
 Sample configuration:
