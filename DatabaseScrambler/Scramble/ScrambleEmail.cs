@@ -23,7 +23,7 @@ namespace DatabaseScrambler.Scramble
 
             for (var i = 0; i < end; i++)
             {
-                var email = $"{firstNames[i]}.{lastNames[i]}@Evil-Corp.test";
+                var email = $"{firstNames[i]}.{lastNames[i]}@Acme-Corp.test";
                 returnValue.Add(email.Replace(" ", "_"));
             }
 

@@ -66,8 +66,7 @@ namespace DatabaseScrambler.Infrastructure
             var builder = new ContainerBuilder();
             builder.RegisterInstance(instance)
                 .As<T>();
-
-            builder.Update(_innerContainer);
+            builder.RegisterInstance(_innerContainer);
         }
 
         /// <summary>

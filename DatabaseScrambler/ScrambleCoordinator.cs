@@ -12,6 +12,7 @@ namespace DatabaseScrambler
     public interface IScrambleCoordinator
     {
         void Scramble(string connectionString, string configurationFile, string runSqlFileAfterScramble);
+        void Scramble(string optionsConnectionString, IEnumerable<Configuration> optionsConfigurations, string optionsRunSqlFileAfterScramble);
     }
 
     public class ScrambleCoordinator : IScrambleCoordinator
@@ -24,6 +25,11 @@ namespace DatabaseScrambler
         }
 
         public void Scramble(string connectionString, string configurationFile, string runSqlFileAfterScramble)
+        {
+            Scramble(connectionString, GetConfiguration(configurationFile), runSqlFileAfterScramble);
+        }
+
+        public void Scramble(string connectionString, IEnumerable<Configuration> configurations, string runSqlFileAfterScramble)
         {
             using (var connection = new SqlConnection(connectionString))
             {
@@ -48,7 +54,7 @@ namespace DatabaseScrambler
                         //Dump all scramble data in temp table.
                         CreateScrambleTable(connection, transaction);
 
-                        foreach (var configuration in GetConfiguration(configurationFile))
+                        foreach (var configuration in configurations)
                         {
                             Console.WriteLine($"Running scrambler {configuration.Type} for table '{configuration.TableName}', column '{configuration.ColumnName}'");
 
@@ -65,7 +71,7 @@ namespace DatabaseScrambler
                         if (!string.IsNullOrEmpty(runSqlFileAfterScramble))
                         {
                             var sql = File.ReadAllText(runSqlFileAfterScramble);
-                        
+
                             using (var command = new SqlCommand(sql, connection, transaction))
                             {
                                 command.CommandTimeout = 0;
@@ -80,7 +86,7 @@ namespace DatabaseScrambler
                         Cansole.WriteError(exception.Message);
                         transaction.Rollback();
                     }
-                } 
+                }
             }
         }
 
@@ -94,8 +100,8 @@ namespace DatabaseScrambler
             {
                 Console.WriteLine("Parsing configuration file");
 
-                var serializer = new XmlSerializer(typeof (XmlConfiguration));
-                returnValue = ((XmlConfiguration)serializer.Deserialize(reader)).ConfigurationItems;
+                var serializer = new XmlSerializer(typeof(XmlConfiguration));
+                returnValue = ((XmlConfiguration) serializer.Deserialize(reader)).ConfigurationItems;
             }
 
             return returnValue;
