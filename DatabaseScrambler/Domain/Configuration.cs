@@ -18,5 +18,8 @@ namespace DatabaseScrambler.Domain
 
         [XmlAttribute("value")]
         public string Value { get; set; }
+        
+        [XmlAttribute("maxLength")]
+        public string MaxLength { get; set; }
     }
 }

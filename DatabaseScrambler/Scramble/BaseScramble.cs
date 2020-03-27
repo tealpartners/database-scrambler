@@ -30,17 +30,40 @@ namespace DatabaseScrambler.Scramble
 
         public virtual void Scramble(SqlConnection connection, SqlTransaction transaction, Configuration configuration)
         {
-            var sqlScript = GetSqlScript("SingleColumnSramble.sql");
-            var sql = string.Format(sqlScript, configuration.TableName  //0
-                                            , configuration.ColumnName  //1
-                                            , ScrambleType              //2
-                                            , configuration.Identifier  //3
-                                            , _random.Next(30000));     //4
+            var sql = GetSqlScriptContent(configuration);
 
             using (var sqlCommand = new SqlCommand(sql, connection, transaction))
             {
                 sqlCommand.CommandTimeout = 0;
                 sqlCommand.ExecuteNonQuery();
+            }
+        }
+
+        private string GetSqlScriptContent(Configuration configuration)
+        {
+            if (string.IsNullOrEmpty(configuration.MaxLength))
+            {
+                var sqlScript =  GetSqlScript("SingleColumnScramble.sql");
+                
+                var sql = string.Format(sqlScript, configuration.TableName //0
+                    , configuration.ColumnName //1
+                    , ScrambleType //2
+                    , configuration.Identifier //3
+                    , _random.Next(30000)); //4
+
+                return sql;
+            }
+            else
+            {
+                var sqlScript =  GetSqlScript("SingleColumnScrambleWithMaxLength.sql");
+                var sql = string.Format(sqlScript, configuration.TableName //0
+                    , configuration.ColumnName //1
+                    , ScrambleType //2
+                    , configuration.Identifier //3
+                    , _random.Next(30000), //4
+                    configuration.MaxLength); //5
+
+                return sql;
             }
         }
 
@@ -57,7 +80,7 @@ namespace DatabaseScrambler.Scramble
             {
                 dataTable.Rows.Add(ScrambleType.ToString(), scrambleData[i], i);
             }
-            
+
             // make sure to enable triggers
             // more on triggers in next post
             var bulkCopy = new SqlBulkCopy(
@@ -92,7 +115,7 @@ namespace DatabaseScrambler.Scramble
         {
             string script;
 
-            var assembly = Assembly.GetExecutingAssembly();            
+            var assembly = Assembly.GetExecutingAssembly();
 
             using (var stream = assembly.GetManifestResourceStream(location))
             {
