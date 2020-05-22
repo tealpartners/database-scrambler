@@ -50,7 +50,7 @@ namespace DatabaseScrambler
 
                         foreach (var configuration in GetConfiguration(configurationFile))
                         {
-                            Console.WriteLine($"Running scrambler {configuration.Type} for table '{configuration.TableName}', column '{configuration.ColumnName}'");
+                            Console.WriteLine($"Running scrambler {configuration.Type} for table '{configuration.Schema}.{configuration.TableName}', column '{configuration.ColumnName}'");
 
                             var scrambleAction = _scrambleActions.SingleOrDefault(x => x.CanScramble(configuration.Type));
                             if (scrambleAction == null)
