@@ -19,7 +19,7 @@ namespace DatabaseScrambler.Domain
         [XmlAttribute("identifier")]
         public string Identifier { get; set; }
 
-        [XmlAttribute("value")] 
+        [XmlAttribute("value")]
         public string Value { get; set; }
     }
 }
