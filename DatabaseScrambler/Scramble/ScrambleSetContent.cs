@@ -6,13 +6,14 @@ namespace DatabaseScrambler.Scramble
 {
     public class ScrambleSetContent : IScramble
     {
-        private string SetContentQuery = "UPDATE [{0}] SET [{1}] = {2};";
+        private string SetContentQuery = "UPDATE [{0}].[{1}] SET [{2}] = {3};";
 
         public void Scramble(SqlConnection connection, SqlTransaction transaction, Configuration configuration)
         {
-            var sql = string.Format(SetContentQuery, configuration.TableName  //0
-                                            , configuration.ColumnName      //1
-                                            , configuration.Value);         //2
+            var sql = string.Format(SetContentQuery, configuration.Schema, // 0
+                                            configuration.TableName               // 1
+                                            , configuration.ColumnName            // 2
+                                            , configuration.Value);               // 3
 
             try
             {

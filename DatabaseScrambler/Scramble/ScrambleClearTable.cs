@@ -13,8 +13,8 @@ namespace DatabaseScrambler.Scramble
 
         public override void Scramble(SqlConnection connection, SqlTransaction transaction, Configuration configuration)
         {
-            const string sqlScript = "TRUNCATE TABLE [{0}]";
-            var sql = string.Format(sqlScript, configuration.TableName);
+            const string sqlScript = "TRUNCATE TABLE [{0}].[{1}]";
+            var sql = string.Format(sqlScript, configuration.Schema, configuration.TableName);
 
             using (var sqlCommand = new SqlCommand(sql, connection, transaction))
             {

@@ -13,8 +13,8 @@ namespace DatabaseScrambler.Scramble
 
         public override void Scramble(SqlConnection connection, SqlTransaction transaction, Configuration configuration)
         {
-            const string sqlScript = "UPDATE [{0}] SET [{1}] = null";
-            var sql = string.Format(sqlScript, configuration.TableName, configuration.ColumnName);
+            const string sqlScript = "UPDATE [{0}].[{1}] SET [{2}] = null";
+            var sql = string.Format(sqlScript, configuration.Schema, configuration.TableName, configuration.ColumnName);
 
             using (var sqlCommand = new SqlCommand(sql, connection, transaction))
             {
