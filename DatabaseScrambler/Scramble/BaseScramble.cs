@@ -35,7 +35,7 @@ namespace DatabaseScrambler.Scramble
                                             , configuration.ColumnName  //1
                                             , ScrambleType              //2
                                             , configuration.Identifier  //3
-                                            , _random.Next(30000) //4
+                                            , _random.Next(30000)       //4
                                             , configuration.Schema);    //5
 
             using (var sqlCommand = new SqlCommand(sql, connection, transaction))
