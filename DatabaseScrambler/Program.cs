@@ -9,7 +9,7 @@
         /// </summary>
         static void Main(string[] args)
         {
-            if (args.Length != 2)
+            if (args.Length < 2 || args.Length > 3)
             {
                 const string error = "Run program as 'DatabaseScrambler.exe <connection string> <ScrambleConfiguration.xml> <custom_sql.sql (optional)>'";
                 Cansole.WriteError(error);
