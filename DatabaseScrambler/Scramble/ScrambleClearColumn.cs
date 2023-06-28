@@ -23,7 +23,7 @@ namespace DatabaseScrambler.Scramble
             }
         }
 
-        protected override IList<string> GetScrambleData()
+        protected override IList<string> GetScrambleData(string culture)
         {
             return new List<string>();
         }

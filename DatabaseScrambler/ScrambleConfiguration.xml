@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<root>
+<root culture="nl">
   <scramble type="FirstName" schema="dbo" tableName="Person" columnName="FirstName" identifier="id" />
   <scramble type="LastName" tableName="Person" columnName="LastName" identifier="id" />
   <scramble type="Email" tableName="Person" columnName="Email" identifier="id" />

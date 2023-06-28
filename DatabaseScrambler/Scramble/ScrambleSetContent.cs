@@ -10,10 +10,11 @@ namespace DatabaseScrambler.Scramble
 
         public void Scramble(SqlConnection connection, SqlTransaction transaction, Configuration configuration)
         {
-            var sql = string.Format(SetContentQuery, configuration.Schema, // 0
-                                            configuration.TableName               // 1
-                                            , configuration.ColumnName            // 2
-                                            , configuration.Value);               // 3
+            var sql = string.Format(SetContentQuery, 
+                configuration.Schema       // 0
+                , configuration.TableName  // 1
+                , configuration.ColumnName // 2
+                , configuration.Value);    // 3
 
             try
             {
@@ -30,7 +31,7 @@ namespace DatabaseScrambler.Scramble
             }
         }
 
-        public void AddScrambleData(SqlConnection connection, SqlTransaction transaction)
+        public void AddScrambleData(SqlConnection connection, SqlTransaction transaction, string culture)
         {
         }
 

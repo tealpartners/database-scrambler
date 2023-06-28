@@ -11,9 +11,13 @@ namespace DatabaseScrambler.Scramble
         {
         }
 
-        protected override IList<string> GetScrambleData()
+        /// <summary>
+        /// Returns City scramble data, supports DE-culture
+        /// </summary>
+        protected override IList<string> GetScrambleData(string culture)
         {
-            return GetResource("City.txt").Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+            var culturePrefix = ParseCulture(culture);
+            return GetResource($"{culturePrefix}City.txt").Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
         }
     }
 }

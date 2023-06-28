@@ -12,30 +12,29 @@ namespace DatabaseScrambler.Scramble
     {
         void Scramble(SqlConnection connection, SqlTransaction transaction, Configuration configuration);
 
-        void AddScrambleData(SqlConnection connection, SqlTransaction transaction);
+        void AddScrambleData(SqlConnection connection, SqlTransaction transaction, string culture);
 
         bool CanScramble(ScrambleType type);
     }
 
     public abstract class BaseScramble : IScramble
     {
-        protected readonly ScrambleType ScrambleType;
-
-        private static Random _random = new Random();
+        private readonly ScrambleType _scrambleType;
+        private static readonly Random Random = new Random();
 
         public BaseScramble(ScrambleType scrambleType)
         {
-            ScrambleType = scrambleType;
+            _scrambleType = scrambleType;
         }
 
         public virtual void Scramble(SqlConnection connection, SqlTransaction transaction, Configuration configuration)
         {
-            var sqlScript = GetSqlScript("SingleColumnSramble.sql");
+            var sqlScript = GetSqlScript("SingleColumnScramble.sql");
             var sql = string.Format(sqlScript, configuration.TableName  //0
                                             , configuration.ColumnName  //1
-                                            , ScrambleType              //2
+                                            , _scrambleType             //2
                                             , configuration.Identifier  //3
-                                            , _random.Next(30000)       //4
+                                            , Random.Next(30000)        //4
                                             , configuration.Schema);    //5
 
             using (var sqlCommand = new SqlCommand(sql, connection, transaction))
@@ -45,9 +44,9 @@ namespace DatabaseScrambler.Scramble
             }
         }
 
-        public virtual void AddScrambleData(SqlConnection connection, SqlTransaction transaction)
+        public virtual void AddScrambleData(SqlConnection connection, SqlTransaction transaction, string culture)
         {
-            var scrambleData = GetScrambleData();
+            var scrambleData = GetScrambleData(culture);
 
             var dataTable = new DataTable();
             dataTable.Columns.Add("@type", typeof(string));
@@ -56,7 +55,7 @@ namespace DatabaseScrambler.Scramble
 
             for (var i = 0; i < scrambleData.Count; i++)
             {
-                dataTable.Rows.Add(ScrambleType.ToString(), scrambleData[i], i);
+                dataTable.Rows.Add(_scrambleType.ToString(), scrambleData[i], i);
             }
             
             // make sure to enable triggers
@@ -75,21 +74,35 @@ namespace DatabaseScrambler.Scramble
             bulkCopy.WriteToServer(dataTable);
         }
 
-        protected abstract IList<string> GetScrambleData();
+        protected abstract IList<string> GetScrambleData(string culture);
 
-        protected string GetSqlScript(string fileName)
+        /// <summary>
+        /// Currently we only support DE as an optional culture
+        /// </summary>
+        protected static string ParseCulture(string culture)
+        {
+            switch (culture?.ToUpperInvariant())
+            {
+                case "DE":
+                    return "de.";
+                default:
+                    return "";
+            }
+        }
+
+        private static string GetSqlScript(string fileName)
         {
             var location = $@"DatabaseScrambler.Scripts.{fileName}";
-            return GetEmbededResource(location);
+            return GetEmbeddedResource(location);
         }
 
-        protected string GetResource(string fileName)
+        protected static string GetResource(string fileName)
         {
             var location = $@"DatabaseScrambler.Resources.{fileName}";
-            return GetEmbededResource(location);
+            return GetEmbeddedResource(location);
         }
 
-        private string GetEmbededResource(string location)
+        private static string GetEmbeddedResource(string location)
         {
             string script;
 
@@ -111,7 +124,7 @@ namespace DatabaseScrambler.Scramble
 
         public bool CanScramble(ScrambleType type)
         {
-            return type == ScrambleType;
+            return type == _scrambleType;
         }
     }
 }
