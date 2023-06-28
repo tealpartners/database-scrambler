@@ -11,7 +11,8 @@ DatabaseScrambler.exe "<connection-string>" ScrambleConfiguration.xml custom_sql
 Sample configuration:
 ```xml
 <?xml version="1.0" encoding="utf-8" ?>
-<root>
+<!-- Default culture is NL, DE supports Address & City -->
+<root culture="nl">
   <!-- These types replace column data based on pre-defined lists -->
   <scramble type="FirstName" tableName="Person" columnName="FirstName" identifier="id" />
   <scramble type="LastName" tableName="Person" columnName="LastName" identifier="id" />

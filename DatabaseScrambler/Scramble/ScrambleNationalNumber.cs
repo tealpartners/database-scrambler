@@ -11,7 +11,7 @@ namespace DatabaseScrambler.Scramble
         {
         }
 
-        protected override IList<string> GetScrambleData()
+        protected override IList<string> GetScrambleData(string culture)
         {
             return GetResource("NationalNumbers.txt").Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
         }

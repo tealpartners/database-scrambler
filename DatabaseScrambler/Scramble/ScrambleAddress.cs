@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using DatabaseScrambler.Domain;
 
 namespace DatabaseScrambler.Scramble
@@ -11,9 +12,13 @@ namespace DatabaseScrambler.Scramble
         {
         }
 
-        protected override IList<string> GetScrambleData()
+        /// <summary>
+        /// Returns Address scramble data, supports DE-culture
+        /// </summary>
+        protected override IList<string> GetScrambleData(string culture)
         {
-            return GetResource("Address.txt").Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+            var culturePrefix = ParseCulture(culture);
+            return GetResource($"{culturePrefix}Address.txt").Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
         }
     }
 }

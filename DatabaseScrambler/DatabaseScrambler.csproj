@@ -80,7 +80,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Scripts\SingleColumnSramble.sql" />
+    <EmbeddedResource Include="Resources\de\Address.txt" />
+    <EmbeddedResource Include="Resources\de\City.txt" />
+    <EmbeddedResource Include="Scripts\SingleColumnScramble.sql" />
     <EmbeddedResource Include="Resources\FirstNames.txt" />
     <EmbeddedResource Include="Resources\LastNames.txt" />
     <EmbeddedResource Include="Resources\NationalNumbers.txt" />
@@ -94,7 +96,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

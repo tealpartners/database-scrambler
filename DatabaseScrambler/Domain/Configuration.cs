@@ -7,9 +7,9 @@ namespace DatabaseScrambler.Domain
         [XmlAttribute("type")]
         public ScrambleType Type { get; set; }
 
-        [XmlAttribute("schema")] 
+        [XmlAttribute("schema")]
         public string Schema { get; set; } = "dbo";
-        
+
         [XmlAttribute("tableName")]
         public string TableName { get; set; }
 

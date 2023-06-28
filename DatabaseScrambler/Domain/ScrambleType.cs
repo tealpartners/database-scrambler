@@ -14,6 +14,6 @@
         ClearColumn,
         ClearTable,
         ContractNumber,
-        SetContent
+        SetContent,
     }
 }

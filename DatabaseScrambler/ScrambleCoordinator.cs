@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Xml.Serialization;
@@ -45,27 +46,30 @@ namespace DatabaseScrambler
                     {
                         Console.WriteLine("Create temp table with scramble data");
 
-                        //Dump all scramble data in temp table.
-                        CreateScrambleTable(connection, transaction);
+                        // Load configuration from file
+                        var configuration = GetConfiguration(configurationFile);
 
-                        foreach (var configuration in GetConfiguration(configurationFile))
+                        // Dump all scramble data in temp table.
+                        CreateScrambleTable(connection, transaction, configuration.Culture);
+
+                        foreach (var configItem in configuration.ConfigurationItems)
                         {
-                            Console.WriteLine($"Running scrambler {configuration.Type} for table '{configuration.Schema}.{configuration.TableName}', column '{configuration.ColumnName}'");
+                            Console.WriteLine($"Running scrambler {configItem.Type} for table '{configItem.Schema}.{configItem.TableName}', column '{configItem.ColumnName}'");
 
-                            var scrambleAction = _scrambleActions.SingleOrDefault(x => x.CanScramble(configuration.Type));
+                            var scrambleAction = _scrambleActions.SingleOrDefault(x => x.CanScramble(configItem.Type));
                             if (scrambleAction == null)
                             {
-                                Cansole.WriteError($"No scramble action found for type '{configuration.Type}'.");
+                                Cansole.WriteError($"No scramble action found for type '{configItem.Type}'.");
                                 throw new Exception();
                             }
 
-                            scrambleAction.Scramble(connection, transaction, configuration);
+                            scrambleAction.Scramble(connection, transaction, configItem);
                         }
 
                         if (!string.IsNullOrEmpty(runSqlFileAfterScramble))
                         {
                             var sql = File.ReadAllText(runSqlFileAfterScramble);
-                        
+
                             using (var command = new SqlCommand(sql, connection, transaction))
                             {
                                 command.CommandTimeout = 0;
@@ -80,13 +84,13 @@ namespace DatabaseScrambler
                         Cansole.WriteError(exception.Message);
                         transaction.Rollback();
                     }
-                } 
+                }
             }
         }
 
-        private IEnumerable<Configuration> GetConfiguration(string configurationFile)
+        private static XmlConfiguration GetConfiguration(string configurationFile)
         {
-            List<Configuration> returnValue;
+            XmlConfiguration returnValue;
 
             Console.WriteLine("Fetching configuration file");
 
@@ -94,14 +98,14 @@ namespace DatabaseScrambler
             {
                 Console.WriteLine("Parsing configuration file");
 
-                var serializer = new XmlSerializer(typeof (XmlConfiguration));
-                returnValue = ((XmlConfiguration)serializer.Deserialize(reader)).ConfigurationItems;
+                var serializer = new XmlSerializer(typeof(XmlConfiguration));
+                returnValue = (XmlConfiguration)serializer.Deserialize(reader);
             }
 
             return returnValue;
         }
 
-        private void CreateScrambleTable(SqlConnection sqlConnection, SqlTransaction transaction)
+        private void CreateScrambleTable(SqlConnection sqlConnection, SqlTransaction transaction, string culture)
         {
             const string query = @"CREATE TABLE #ScrambleData
                         (
@@ -121,7 +125,7 @@ namespace DatabaseScrambler
 
             foreach (var scrambleAction in _scrambleActions)
             {
-                scrambleAction.AddScrambleData(sqlConnection, transaction);
+                scrambleAction.AddScrambleData(sqlConnection, transaction, culture);
             }
         }
     }
