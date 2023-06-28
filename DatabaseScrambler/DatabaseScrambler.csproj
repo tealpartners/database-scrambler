@@ -58,6 +58,8 @@
     <Compile Include="Infrastructure\IContainer.cs" />
     <Compile Include="Infrastructure\ScramblerModule.cs" />
     <Compile Include="Scramble\BaseScramble.cs" />
+    <Compile Include="Scramble\DE\ScrambleAddressDE.cs" />
+    <Compile Include="Scramble\DE\ScrambleCityDE.cs" />
     <Compile Include="Scramble\ScrambleClearColumn.cs" />
     <Compile Include="Scramble\ScrambleAddress.cs" />
     <Compile Include="Scramble\ScrambleBirthdate.cs" />
@@ -80,7 +82,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Scripts\SingleColumnSramble.sql" />
+    <EmbeddedResource Include="Resources\AddressDE.txt" />
+    <EmbeddedResource Include="Resources\CityDE.txt" />
+    <EmbeddedResource Include="Scripts\SingleColumnScramble.sql" />
     <EmbeddedResource Include="Resources\FirstNames.txt" />
     <EmbeddedResource Include="Resources\LastNames.txt" />
     <EmbeddedResource Include="Resources\NationalNumbers.txt" />
@@ -94,7 +98,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

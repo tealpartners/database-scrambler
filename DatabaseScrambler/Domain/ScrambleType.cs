@@ -14,6 +14,9 @@
         ClearColumn,
         ClearTable,
         ContractNumber,
-        SetContent
+        SetContent,
+        
+        Address_DE,
+        City_DE
     }
 }

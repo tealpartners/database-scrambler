@@ -30,7 +30,7 @@ namespace DatabaseScrambler.Scramble
 
         public virtual void Scramble(SqlConnection connection, SqlTransaction transaction, Configuration configuration)
         {
-            var sqlScript = GetSqlScript("SingleColumnSramble.sql");
+            var sqlScript = GetSqlScript("SingleColumnScramble.sql");
             var sql = string.Format(sqlScript, configuration.TableName  //0
                                             , configuration.ColumnName  //1
                                             , ScrambleType              //2
