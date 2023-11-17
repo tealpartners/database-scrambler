@@ -64,6 +64,7 @@
     <Compile Include="Scramble\ScrambleCity.cs" />
     <Compile Include="Scramble\ScrambleClearTable.cs" />
     <Compile Include="Scramble\ScrambleContractNumber.cs" />
+    <Compile Include="Scramble\ScrambleCopyColumn.cs" />
     <Compile Include="Scramble\ScrambleEmail.cs" />
     <Compile Include="Scramble\ScrambleFirstName.cs" />
     <Compile Include="Scramble\ScrambleNationalNumber.cs" />
