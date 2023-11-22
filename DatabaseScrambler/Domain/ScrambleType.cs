@@ -15,5 +15,6 @@
         ClearTable,
         ContractNumber,
         SetContent,
+        CopyColumn
     }
 }

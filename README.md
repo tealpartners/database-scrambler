@@ -29,6 +29,9 @@ Sample configuration:
   <!-- To clear a column or table, use these types -->
   <scramble type="ClearColumn" tableName="User" columnName="ExternalSystemUniqueIdentifier" />
   <scramble type="ClearTable" tableName="Document" />
+    
+  <!-- To copy the value from a sourceColumn 'Id' to a targetColumn 'ExternalIdentifier', use CopyColumn -->
+  <scramble type="CopyColumn" tableName="Person" columnName="ExternalIdentifier" copyColumn="Id" identifier="id" />
 
   <!-- To overwrite content, use set-content
        BEWARE: value tag allows you to write any SQL-type; nvarchar, datetime, binary, ...

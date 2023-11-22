@@ -21,5 +21,8 @@ namespace DatabaseScrambler.Domain
 
         [XmlAttribute("value")]
         public string Value { get; set; }
+
+        [XmlAttribute("copyColumn")]
+        public string CopyColumn { get; set; }
     }
 }
