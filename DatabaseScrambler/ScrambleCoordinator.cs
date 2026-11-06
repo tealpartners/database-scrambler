@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -12,7 +12,7 @@ namespace DatabaseScrambler
 {
     public interface IScrambleCoordinator
     {
-        void Scramble(string connectionString, string configurationFile, string runSqlFileAfterScramble);
+        bool Scramble(string connectionString, string configurationFile, string runSqlFileAfterScramble);
     }
 
     public class ScrambleCoordinator : IScrambleCoordinator
@@ -24,7 +24,7 @@ namespace DatabaseScrambler
             _scrambleActions = scrambleActions;
         }
 
-        public void Scramble(string connectionString, string configurationFile, string runSqlFileAfterScramble)
+        public bool Scramble(string connectionString, string configurationFile, string runSqlFileAfterScramble)
         {
             using (var connection = new SqlConnection(connectionString))
             {
@@ -37,7 +37,7 @@ namespace DatabaseScrambler
                 catch (SqlException exception)
                 {
                     Cansole.WriteError(exception.Message);
-                    return;
+                    return false;
                 }
 
                 using (var transaction = connection.BeginTransaction())
@@ -78,11 +78,13 @@ namespace DatabaseScrambler
                         }
 
                         transaction.Commit();
+                        return true;
                     }
                     catch (Exception exception)
                     {
                         Cansole.WriteError(exception.Message);
                         transaction.Rollback();
+                        return false;
                     }
                 }
             }

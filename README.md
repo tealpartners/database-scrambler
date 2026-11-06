@@ -6,6 +6,18 @@ Provide a way to scramble your offline SQL database with configuration
 DatabaseScrambler.exe "<connection-string>" ScrambleConfiguration.xml custom_sql.sql
 ```
 - custom_sql.sql is an optional parameter
+- exits with code 0 on success and 1 on failure, in which case all changes are rolled back
+
+# build
+Requires the [.NET 10 SDK](https://dotnet.microsoft.com/download).
+```bash
+dotnet build -c Release
+```
+The executable is written to `DatabaseScrambler/bin/Release/net10.0/`.
+
+Note: the tool uses `Microsoft.Data.SqlClient`, which encrypts connections by default. When the SQL Server has no trusted certificate, add `TrustServerCertificate=True` (or `Encrypt=False`) to the connection string.
+
+Microsoft Entra authentication is supported through the `Authentication` keyword, e.g. `Authentication=Active Directory Default`. Set `AZURE_TOKEN_CREDENTIALS=AzureCliCredential` to make it use the Azure CLI login only (for example inside an Azure DevOps AzureCLI task).
 
 # configuration
 Sample configuration:

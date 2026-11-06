@@ -8,6 +8,7 @@ namespace DatabaseScrambler.Infrastructure
     public class AutofacContainer : IContainer
     {
         private readonly Autofac.IContainer _innerContainer;
+        private ILifetimeScope _scope;
 
         public AutofacContainer(Action<ContainerBuilder> builderAction)
         {
@@ -17,6 +18,7 @@ namespace DatabaseScrambler.Infrastructure
                 builderAction(builder);
 
             _innerContainer = builder.Build();
+            _scope = _innerContainer;
         }
 
         /// <summary>
@@ -26,7 +28,7 @@ namespace DatabaseScrambler.Infrastructure
         /// <returns></returns>
         public IEnumerable<T> ResolveAll<T>()
         {
-            return _innerContainer.Resolve<IEnumerable<T>>();
+            return _scope.Resolve<IEnumerable<T>>();
         }
 
         /// <summary>
@@ -37,7 +39,7 @@ namespace DatabaseScrambler.Infrastructure
         public IEnumerable ResolveAll(Type type)
         {
             var genericType = typeof(IEnumerable<>).MakeGenericType(type);
-            return (IEnumerable)_innerContainer.Resolve(genericType);
+            return (IEnumerable)_scope.Resolve(genericType);
         }
 
         /// <summary>
@@ -48,12 +50,12 @@ namespace DatabaseScrambler.Infrastructure
         /// <returns>The instance</returns>		
         public object Resolve(Type type)
         {
-            return _innerContainer.Resolve(type);
+            return _scope.Resolve(type);
         }
 
         public T Resolve<T>()
         {
-            return _innerContainer.Resolve<T>();
+            return _scope.Resolve<T>();
         }
 
         /// <summary>
@@ -63,11 +65,7 @@ namespace DatabaseScrambler.Infrastructure
         /// <param name="instance"></param>
         public void Add<T>(T instance) where T : class
         {
-            var builder = new ContainerBuilder();
-            builder.RegisterInstance(instance)
-                .As<T>();
-
-            builder.Update(_innerContainer);
+            _scope = _scope.BeginLifetimeScope(builder => builder.RegisterInstance(instance).As<T>());
         }
 
         /// <summary>
@@ -77,7 +75,7 @@ namespace DatabaseScrambler.Infrastructure
         /// <returns>The instance or null when not found</returns>		
         public object TryResolve(Type type)
         {
-            return _innerContainer.IsRegistered(type) ? _innerContainer.Resolve(type) : null;
+            return _scope.IsRegistered(type) ? _scope.Resolve(type) : null;
         }
 
         public Autofac.IContainer InnerContainer
